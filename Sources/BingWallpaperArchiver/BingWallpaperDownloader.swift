@@ -64,6 +64,11 @@ struct BingWallpaperDownloader {
                 let url = URL(string: filePathString)!
                 let data = try Data(contentsOf: url)
                 let oldResponse = try JSONDecoder().decode(BingWPResponse.self, from: data)
+                if oldResponse.images.contains(where: { img in
+                    images.first?.hsh == img.hsh
+                }) {
+                    return
+                }
                 let arr = Array((oldResponse.images + images).sorted().reversed())
                 let newResponse = BingWPResponse(images: arr)
                 let encodedData = try JSONEncoder().encode(newResponse)
